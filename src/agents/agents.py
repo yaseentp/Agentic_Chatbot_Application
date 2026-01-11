@@ -3,8 +3,13 @@ from langgraph.graph.state import CompiledStateGraph
 from langgraph.pregel import Pregel
 from agents.lazy_agent import LazyLoadingAgent
 from agents.web_search_chatbot import web_search_chatbot
+from agents.chatbot_with_memory import MemoryChatAgent
 
 from schema import AgentInfo
+
+
+
+
 
 DEFAULT_AGENT = "web_search_chatbot"
 
@@ -51,3 +56,24 @@ def get_all_agent_info() -> list[AgentInfo]:
     return [
         AgentInfo(key=agent_id, description=agent.description) for agent_id, agent in agents.items()
     ]
+
+
+def register_memory_chat_agent(
+    *,
+    vectorstore,
+    sql_engine,
+    embedding_service,
+    serper_api_key: str,
+) -> None:
+    """
+    Register the MemoryChatAgent after dependencies are available.
+    """
+    agents["memory_chatbot"] = Agent(
+        description="Chatbot with long-term memory and web search",
+        graph_like=MemoryChatAgent(
+            vectorstore=vectorstore,
+            sql_engine=sql_engine,
+            embedding_service=embedding_service,
+            serper_api_key=serper_api_key,
+        ),
+    )

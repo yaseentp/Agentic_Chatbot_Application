@@ -5,6 +5,8 @@ from agents.agents import (
     get_agent,
     get_all_agent_info,
     load_agent,
+    register_memory_chat_agent,
+    agents,
 )
 
 __all__ = [
@@ -14,4 +16,7 @@ __all__ = [
     "DEFAULT_AGENT",
     "AgentGraph",
     "AgentGraphLike",
+    "register_memory_chat_agent",
+    "agents"
+    
 ]
