@@ -18,8 +18,12 @@ from langfuse import Langfuse  # type: ignore[import-untyped]
 from langfuse.callback import CallbackHandler  # type: ignore[import-untyped]
 from langgraph.types import Command, Interrupt
 from langsmith import Client as LangsmithClient
+from db.vector_store import get_vectorstore
+from db.engine import sql_engine
+#from agents import agents, register_memory_chat_agent, load_agent, get_agent
+from memory.embeddings import embedding_service
 
-from agents import DEFAULT_AGENT, AgentGraph, get_agent, get_all_agent_info, load_agent
+from agents import DEFAULT_AGENT, AgentGraph, get_agent, get_all_agent_info, load_agent,register_memory_chat_agent
 from core import settings
 from memory import initialize_database, initialize_store
 from schema import (
@@ -75,6 +79,17 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
             # Only setup store for Postgres as InMemoryStore doesn't need setup
             if hasattr(store, "setup"):  # ignore: union-attr
                 await store.setup()
+
+            # setup vector store
+            app.state.vectorstore = await get_vectorstore()
+            logger.info("pgvector vectorstore client initialized")
+
+            register_memory_chat_agent(
+            vectorstore=app.state.vectorstore,
+            sql_engine=sql_engine,
+            embedding_service=embedding_service,
+            serper_api_key=settings.GOOGLE_API_KEY.get_secret_value(),
+            )
 
             # Configure agents with both memory components and async loading
             agents = get_all_agent_info()
