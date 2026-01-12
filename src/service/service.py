@@ -20,6 +20,9 @@ from langgraph.types import Command, Interrupt
 from langsmith import Client as LangsmithClient
 from db.vector_store import get_vectorstore
 from db.engine import sql_engine
+from db.bootstrap import bootstrap_database
+
+
 #from agents import agents, register_memory_chat_agent, load_agent, get_agent
 from memory.embeddings import embedding_service
 
@@ -79,6 +82,9 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
             # Only setup store for Postgres as InMemoryStore doesn't need setup
             if hasattr(store, "setup"):  # ignore: union-attr
                 await store.setup()
+
+            # setup table and index
+            await bootstrap_database()
 
             # setup vector store
             app.state.vectorstore = await get_vectorstore()

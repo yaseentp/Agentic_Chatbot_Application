@@ -1,4 +1,4 @@
-# db/indexes.py
+import asyncio
 from langchain_postgres.v2.indexes import IVFFlatIndex
 from langchain_postgres.v2.vectorstores import AsyncPGVectorStore
 
@@ -13,3 +13,6 @@ async def create_indexes():
 
     await vectorstore.aapply_vector_index(IVFFlatIndex())
     print("✅ Vector index created")
+
+if __name__ == "__main__":
+    asyncio.run(create_indexes())

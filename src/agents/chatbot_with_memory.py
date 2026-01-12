@@ -149,14 +149,14 @@ class MemoryChatAgent(LazyLoadingAgent):
                                 {memory_context}
                                 """
 
-                system_prompt = SystemMessage(
-                                                content=f"""
+            system_prompt = SystemMessage(
+                                content=f"""
                                 You are a helpful assistant.
                                 {memory_block}
 
                                 Today's date is {date.today().strftime("%B %d %Y")}
                                 """
-                                            )
+                                )
 
             messages_to_send = [system_prompt] + state["messages"]
 

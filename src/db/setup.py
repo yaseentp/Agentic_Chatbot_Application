@@ -1,5 +1,6 @@
 from sqlalchemy import text
 from langchain_postgres import Column
+import asyncio
 
 from db.engine import sql_engine, pg_engine
 
@@ -26,3 +27,6 @@ async def setup_database():
     )
 
     print("✅ Database setup complete")
+
+if __name__ == "__main__":
+    asyncio.run(setup_database())
