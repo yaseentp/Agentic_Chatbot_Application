@@ -45,6 +45,8 @@ from service.utils import (
     remove_tool_calls,
 )
 
+USE_POSTGRES = settings.DATABASE_TYPE == "postgres"
+
 warnings.filterwarnings("ignore", category=LangChainBetaWarning)
 logger = logging.getLogger(__name__)
 
@@ -83,19 +85,24 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
             if hasattr(store, "setup"):  # ignore: union-attr
                 await store.setup()
 
-            # setup table and index
-            await bootstrap_database()
+            if USE_POSTGRES:
+                # ✅ ONLY when Postgres is configured
+                await bootstrap_database()
 
-            # setup vector store
-            app.state.vectorstore = await get_vectorstore()
-            logger.info("pgvector vectorstore client initialized")
 
-            register_memory_chat_agent(
-            vectorstore=app.state.vectorstore,
-            sql_engine=sql_engine,
-            embedding_service=embedding_service,
-            serper_api_key=settings.GOOGLE_API_KEY.get_secret_value(),
-            )
+                app.state.vectorstore = await get_vectorstore()
+
+                logger.info("pgvector vectorstore client initialized")
+
+                register_memory_chat_agent(
+                    vectorstore=app.state.vectorstore,
+                    sql_engine=sql_engine,
+                    embedding_service=embedding_service,
+                    serper_api_key=settings.GOOGLE_API_KEY.get_secret_value(),
+                    )
+            else:
+                app.state.vectorstore = None
+                logger.info("Using SQLite / in-memory store, skipping Postgres bootstrap")
 
             # Configure agents with both memory components and async loading
             agents = get_all_agent_info()
