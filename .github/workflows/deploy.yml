@@ -42,7 +42,7 @@ jobs:
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'agent-service'
+          app-name: 'ChatbotAgentService'
           slot-name: 'production'
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
           images: index.docker.io/${{ secrets.DOCKER_USERNAME }}/chatbot_agent.service:${{ github.sha }}
