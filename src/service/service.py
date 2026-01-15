@@ -100,6 +100,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
                     embedding_service=embedding_service,
                     serper_api_key=settings.GOOGLE_API_KEY.get_secret_value(),
                     )
+                print("Registered memory chatbot")
             else:
                 app.state.vectorstore = None
                 logger.info("Using SQLite / in-memory store, skipping Postgres bootstrap")

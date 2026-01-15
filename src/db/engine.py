@@ -18,6 +18,7 @@ def get_postgres_connection_string() -> str:
     f"{settings.POSTGRES_PASSWORD.get_secret_value()}@"
     f"{settings.POSTGRES_HOST}:{settings.POSTGRES_PORT}/"
     f"{settings.POSTGRES_DB}"
+    f"?ssl=require"
 )
 
     return DATABASE_URL
@@ -48,6 +49,7 @@ def get_postgres_connection_string() -> str:
 def create_pg_engine(
     echo: bool = True,
 ):
+    print("connection string : ",get_postgres_connection_string())
     engine = create_async_engine(
         get_postgres_connection_string(),
         echo=echo,
