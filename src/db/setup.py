@@ -2,18 +2,21 @@ from sqlalchemy import text
 from langchain_postgres import Column
 import asyncio
 
-from db.engine import sql_engine, pg_engine
+from db.engine import create_pg_engine,create_sql_engine
 
 TABLE_NAME = "conversation_memory"
 VECTOR_SIZE = 1536
 
 async def setup_database():
+
+    sql_engine = create_sql_engine()
     # 1. Enable extensions
     async with sql_engine.begin() as conn:
         await conn.execute(text("CREATE EXTENSION IF NOT EXISTS vector"))
         await conn.execute(text("CREATE EXTENSION IF NOT EXISTS pgcrypto"))
 
     # 2. Create vectorstore table
+    pg_engine = create_pg_engine()
     await pg_engine.ainit_vectorstore_table(
         table_name=TABLE_NAME,
         vector_size=VECTOR_SIZE,

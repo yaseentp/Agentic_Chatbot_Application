@@ -1,5 +1,5 @@
 from langchain_postgres.v2.vectorstores import AsyncPGVectorStore
-from db.engine import pg_engine
+from db.engine import create_pg_engine
 from memory.embeddings import embedding_service
 
 TABLE_NAME = "conversation_memory"
@@ -15,7 +15,7 @@ async def get_vectorstore() -> AsyncPGVectorStore:
 
     if _vectorstore is None:
         _vectorstore = await AsyncPGVectorStore.create(
-            engine=pg_engine,
+            engine=create_pg_engine(),
             table_name=TABLE_NAME,
             embedding_service=embedding_service,
             metadata_columns=[

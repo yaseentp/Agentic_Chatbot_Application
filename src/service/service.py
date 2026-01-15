@@ -19,7 +19,7 @@ from langfuse.callback import CallbackHandler  # type: ignore[import-untyped]
 from langgraph.types import Command, Interrupt
 from langsmith import Client as LangsmithClient
 from db.vector_store import get_vectorstore
-from db.engine import sql_engine
+from db.engine import create_sql_engine
 from db.bootstrap import bootstrap_database
 
 
@@ -96,7 +96,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 
                 register_memory_chat_agent(
                     vectorstore=app.state.vectorstore,
-                    sql_engine=sql_engine,
+                    sql_engine=create_sql_engine(),
                     embedding_service=embedding_service,
                     serper_api_key=settings.GOOGLE_API_KEY.get_secret_value(),
                     )

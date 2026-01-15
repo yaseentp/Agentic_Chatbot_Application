@@ -2,11 +2,11 @@ import asyncio
 from langchain_postgres.v2.indexes import IVFFlatIndex
 from langchain_postgres.v2.vectorstores import AsyncPGVectorStore
 
-from db.engine import pg_engine
-
+#from db.engine import pg_engine
+from db.engine import create_pg_engine
 async def create_indexes():
     vectorstore = await AsyncPGVectorStore.create(
-        engine=pg_engine,
+        engine=create_pg_engine(),
         table_name="conversation_memory",
         embedding_service=None,  # not needed for index creation
     )
