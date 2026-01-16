@@ -36,7 +36,7 @@ jobs:
           context: .
           push: true
           tags: index.docker.io/${{ secrets.DOCKER_USERNAME }}/chatbot_frontend.service:${{ github.sha }}
-          file: docker/Dockerfile.service
+          file: docker/Dockerfile.app
 
   deploy:
     runs-on: ubuntu-latest
